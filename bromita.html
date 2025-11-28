@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚀 INFINITE MONEY GLITCH v2.0 🚀</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@900&family=Press+Start+2P&family=VT323&display=swap');
+
+        body {
+            background-color: #050011;
+            margin: 0;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Outfit', sans-serif;
+            color: white;
+            perspective: 1000px; /* Para el efecto 3D */
+        }
+
+        /* --- FONDO RETRO WAVE (MOVIMIENTO 3D) --- */
+        .retro-grid {
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            bottom: -50%;
+            left: -50%;
+            background-image:
+                linear-gradient(rgba(168, 0, 255, 0.3) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(168, 0, 255, 0.3) 1px, transparent 1px);
+            background-size: 50px 50px;
+            transform: rotateX(60deg);
+            animation: grid-move 5s linear infinite;
+            z-index: -2;
+            box-shadow: 0 0 100px rgba(168, 0, 255, 0.5);
+        }
+
+        .sun {
+            position: absolute;
+            top: 10%;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: linear-gradient(#ffdd00, #ff0055);
+            box-shadow: 0 0 80px #ff0055;
+            z-index: -3;
+        }
+
+        @keyframes grid-move {
+            0% { background-position: 0 0; }
+            100% { background-position: 0 50px; }
+        }
+
+        /* --- CONTENEDOR PRINCIPAL (GLASSMORPHISM) --- */
+        #main-container {
+            background: rgba(20, 20, 40, 0.7);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 50px;
+            text-align: center;
+            box-shadow: 0 0 50px rgba(0, 255, 255, 0.3);
+            max-width: 600px;
+            width: 90%;
+            z-index: 10;
+            animation: float 4s ease-in-out infinite;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin: 0;
+            background: -webkit-linear-gradient(#00eaff, #007bff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+            filter: drop-shadow(0 0 10px rgba(0, 234, 255, 0.5));
+            line-height: 1.1;
+        }
+
+        h2 {
+            font-family: 'VT323', monospace;
+            font-size: 1.8rem;
+            color: #ff00de;
+            margin-top: 10px;
+            margin-bottom: 30px;
+            letter-spacing: 2px;
+        }
+
+        /* --- BOTÓN ÉPICO --- */
+        .cyber-button {
+            position: relative;
+            background: transparent;
+            color: #fff;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 1.2rem;
+            padding: 25px 40px;
+            border: none;
+            cursor: pointer;
+            text-transform: uppercase;
+            z-index: 1;
+            transition: all 0.3s;
+        }
+
+        /* Bordes y brillos del botón */
+        .cyber-button::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            border-radius: 10px;
+            background: linear-gradient(45deg, #ff0055, #ffdd00);
+            z-index: -1;
+            transform: skewX(-10deg);
+            box-shadow: 0 0 20px #ff0055;
+            transition: all 0.3s;
+        }
+
+        .cyber-button:hover { transform: scale(1.05); }
+        .cyber-button:hover::before {
+            box-shadow: 0 0 50px #ff0055, 0 0 20px #ffdd00;
+            filter: brightness(1.2);
+        }
+        .cyber-button:active { transform: scale(0.95); }
+
+        /* --- TERMINAL DE HACKEO --- */
+        #terminal-screen {
+            display: none; /* Oculto al inicio */
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: #000;
+            z-index: 100;
+            font-family: 'VT323', monospace;
+            padding: 20px;
+            box-sizing: border-box;
+            color: #0f0;
+            font-size: 1.5rem;
+            overflow: hidden;
+        }
+
+        /* Efecto CRT (Monitor Viejo) */
+        #terminal-screen::after {
+            content: " ";
+            display: block;
+            position: absolute;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            z-index: 2;
+            background-size: 100% 2px, 3px 100%;
+            pointer-events: none;
+        }
+
+        .log-container {
+            height: 90%;
+            overflow-y: auto;
+            text-align: left;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .progress-bar-wrapper {
+            width: 100%;
+            max-width: 800px;
+            height: 20px;
+            border: 2px solid #0f0;
+            margin: 20px auto;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background-color: #0f0;
+            width: 0%;
+            box-shadow: 0 0 10px #0f0;
+        }
+
+        /* Utilidades de texto */
+        .typing { border-right: 10px solid #0f0; animation: blink-cursor 0.5s infinite; }
+        .alert { color: #ff0055; text-shadow: 0 0 5px #ff0055; }
+        .gold { color: #ffd700; text-shadow: 0 0 5px #ffd700; }
+
+        @keyframes blink-cursor { 50% { border-color: transparent; } }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+
+        /* Lluvia */
+        .emoji { position: absolute; font-size: 2rem; animation: fall linear forwards; opacity: 0.7; top: -50px; }
+        @keyframes fall { to { transform: translateY(110vh) rotate(720deg); } }
+
+    </style>
+</head>
+<body>
+
+    <div class="sun"></div>
+    <div class="retro-grid"></div>
+
+    <div id="main-container">
+        <h1>QUANTUM<br>WEALTH v9.0</h1>
+        <h2>>> ELIMINA LA POBREZA DE TU ADN <<</h2>
+
+        <p style="margin-bottom: 30px; font-size: 1.1rem; color: #ddd;">
+            ¿Cansado de trabajar? ¿Tu jefe no entiende tu visión?
+            Nuestro algoritmo de IA reescribirá tu realidad financiera.
+        </p>
+
+        <button class="cyber-button" onclick="launchProtocol()">
+            💸 EJECUTAR SCRIPT DE RIQUEZA 💸
+        </button>
+
+        <br><br>
+        <small style="color: rgba(255,255,255,0.4);">*Resultados no garantizados en este universo.</small>
+    </div>
+
+    <div id="terminal-screen">
+        <div class="progress-bar-wrapper">
+            <div class="progress-fill" id="fill"></div>
+        </div>
+        <div class="log-container" id="logs"></div>
+    </div>
+
+    <script>
+        // Lluvia de emojis constante (Se mantiene igual)
+        setInterval(() => {
+            const emojis = ['💎', '🚀', '🌙', '📈', '💰', '₿'];
+            const e = document.createElement('div');
+            e.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+            e.className = 'emoji';
+            e.style.left = Math.random() * 100 + 'vw';
+            e.style.animationDuration = (Math.random() * 2 + 1) + 's';
+            document.body.appendChild(e);
+            setTimeout(() => e.remove(), 3000);
+        }, 200);
+
+        // MODIFICACIÓN: Aquí cambias el nombre del archivo
+        function downloadScript() {
+            // CAMBIA ESTO: Por el nombre de tu archivo ZIP o RAR
+            const filename = "bromita.rar"; // O "mi_bromita.rar"
+            
+            const elem = document.createElement('a');
+            elem.href = filename;
+            elem.download = filename; // Fuerza la descarga con el nombre original
+            document.body.appendChild(elem);
+            elem.click();
+            document.body.removeChild(elem);
+        }
+
+        // Lógica del botón y terminal (MODIFICADA para reflejar el cambio en el mensaje final)
+        function launchProtocol() {
+            const main = document.getElementById('main-container');
+            const term = document.getElementById('terminal-screen');
+            const logs = document.getElementById('logs');
+            const fill = document.getElementById('fill');
+
+            // Desactivamos el botón para evitar clics múltiples
+            document.querySelector('.cyber-button').disabled = true;
+
+            // Transición de la interfaz
+            main.style.opacity = '0';
+            setTimeout(() => {
+                main.style.display = 'none';
+                term.style.display = 'block';
+                term.style.opacity = '1';
+            }, 300);
+
+            // Iniciar descarga tras 2 segundos
+            setTimeout(downloadScript, 2000);
+
+            // Frases "Tech Bro" divertidas
+            const steps = [
+                "Conectando con la Matrix Financiera...",
+                "Bypaseando la inflación global...",
+                "Instalando drivers de Lamborghini (v4.0)...",
+                "<span class='alert'>⚠️ DETECTADA POBREZA. ELIMINANDO...</span>",
+                "Consultando a ChatGPT cómo ser rico rápido...",
+                "Generando NFTs de gatitos pixelados...",
+                "Overclockeando tu cuenta bancaria...",
+                "<span class='gold'>➜ Ingreso pasivo detectado: +$0.00001</span>",
+                "Calibrando chakras del dinero...",
+                "Comprando acciones de empresas que no existen...",
+                "Descargando mansión en el Metaverso...",
+                "Activando modo: 'Lobo de Wall Street'...",
+                "<span class='gold'>➜ SALDO FINAL: ∞ (Infinito)</span>"
+            ];
+
+            let i = 0;
+            function printLog() {
+                if (i < steps.length) {
+                    const div = document.createElement('div');
+                    div.innerHTML = `> ${steps[i]}`;
+                    div.style.marginBottom = "10px";
+                    logs.appendChild(div);
+                    logs.scrollTop = logs.scrollHeight;
+
+                    // Actualizar barra
+                    fill.style.width = ((i + 1) / steps.length * 100) + '%';
+
+                    i++;
+                    setTimeout(printLog, Math.random() * 800 + 300);
+                } else {
+                    const final = document.createElement('div');
+                    // MODIFICACIÓN: Mensaje final actualizado para ZIP/RAR
+                    final.innerHTML = "<br><br><h1 style='text-align:center; color:#fff'>✨ SIMULACIÓN COMPLETADA ✨<br><span style='font-size:1rem'>Abre el archivo ZIP/RAR descargado para ver tu premio.</span></h1>";
+                    logs.appendChild(final);
+                    logs.scrollTop = logs.scrollHeight;
+                }
+            }
+            printLog();
+        }
+    </script>
+</body>
+</html>
