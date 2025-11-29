@@ -1,113 +1,101 @@
-# 🚀 Infinite Money Glitch (PoC)
+# 🚀 Infinite Money Glitch (PoC) - Advanced Red Teaming Demo
 
-> **⚠️ DISCLAIMER / AVISO LEGAL:** > Este repositorio contiene código diseñado con fines **EDUCATIVOS** y de **PRUEBA DE CONCEPTO** sobre ingeniería social y scripts de automatización.  
-> **No es un virus destructivo**, no roba datos, no encripta archivos ni daña el hardware.  
-> El autor no se hace responsable del mal uso de este software. Ejecútalo solo en entornos controlados o con el consentimiento explícito del usuario (como una broma acordada).
+> **⚠️ AVISO LEGAL Y ÉTICO:** > Este repositorio contiene código diseñado exclusivamente con fines **EDUCATIVOS** y de **INVESTIGACIÓN EN CIBERSEGURIDAD**.  
+> El objetivo es demostrar vectores de ataque mediante Ingeniería Social, técnicas de persistencia avanzada y simulación de C2.  
+> **No es un virus destructivo:** No cifra archivos, no roba credenciales y no daña el hardware.  
+> El autor no se hace responsable del mal uso de estas herramientas. Ejecútalo únicamente en entornos controlados (Sandboxes/VMs) o con consentimiento explícito.
 
 ---
 
 ## 📖 Sobre el Proyecto
 
-Este proyecto es una demostración satírica de cómo funcionan las estafas de "dinero rápido" en internet, combinando una interfaz web atractiva con scripts de automatización persistentes.
+Este proyecto es una **Prueba de Concepto (PoC)** que simula un ataque de cadena completa (*Kill Chain*), desde el vector de entrada hasta el establecimiento de persistencia y comunicación con un servidor de Comando y Control (C2).
 
-El objetivo es demostrar cómo la **Ingeniería Social** (una web bonita y promesas falsas) puede convencer a un usuario de descargar y ejecutar código arbitrario en su máquina, saltándose las barreras de seguridad habituales mediante la confianza.
-
-### Componentes
-
-1.  **La Web (Frontend):**
-    * Estética *Retro Wave / Cyberpunk*.
-    * Simulación de terminal de hacking y mensajes persuasivos.
-    * Detección de Sistema Operativo para ofrecer el payload correspondiente (`.exe` o `.zip`).
-
-2.  **Los Scripts (Payloads):**
-    * **Windows:** Un script Batch compilado a EXE que se auto-instala en el inicio.
-    * **Linux:** Un script Bash híbrido que configura persistencia en el entorno de escritorio.
-    * **Efectos:** Spam de ventanas inofensivas, reproducción de video y cambio de fondo de pantalla.
+Utiliza una fachada satírica ("Infinite Money Glitch") con estética *Cyberpunk* para engañar al usuario y lograr la ejecución de código, demostrando cómo la **Ingeniería Social** supera las barreras técnicas y cómo el malware moderno se oculta en el sistema.
 
 ---
 
-## 🛠️ Funcionamiento Técnico
+## ⚙️ Arquitectura y Capacidades Técnicas
 
-### Windows
-* **Persistencia:** Se copia a sí mismo en `%APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup`.
-* **Comportamiento:** Bucle infinito abriendo ventanas CMD.
-* **PowerShell Injection:** Utiliza llamadas a la API de Windows para cambiar el fondo de pantalla sin necesidad de archivos externos.
+El malware simula el comportamiento de una amenaza persistente (APT) utilizando técnicas modernas:
 
-### Linux
-* **Persistencia:** Crea un archivo `.desktop` en `~/.config/autostart` y se oculta en `~/.hidden_sys_check`.
-* **Compatibilidad:** Funciona en entornos basados en GNOME/XFCE (Ubuntu, Mint, Debian, Kali).
-* **Ingeniería Social:** Requiere que el usuario otorgue permisos de ejecución manualmente (`chmod +x`), demostrando la barrera de seguridad de Linux.
+### 1. 🦠 Vector de Infección (Ingeniería Social)
+* **Web Cebo:** Interfaz HTML/CSS reactiva que detecta el Sistema Operativo del visitante.
+* **Payload Adaptativo:** Entrega automática de `.exe` (Windows) o `.zip` (Linux).
+* **Engaño Técnico:** Instrucciones falsas ("Drivers de Lamborghini", "Bypass de seguridad") para convencer al usuario de otorgar permisos de ejecución (`chmod +x` o `Run as Admin`).
 
----
+### 2. ⚓ Persistencia Avanzada & Ocultación
+A diferencia del malware básico, este script no usa la carpeta de "Inicio" visible. Sobrevive a reinicios ocultándose en el sistema:
 
-## 🛑 GUÍA DE ELIMINACIÓN (CLEANUP)
+#### 🪟 Windows (Advanced Persistence)
+* **Doble Persistencia:**
+    1.  **Registro:** Inyección en `HKCU\Software\Microsoft\Windows\CurrentVersion\Run`.
+    2.  **Task Scheduler:** Creación de tarea programada (`schtasks`) que se ejecuta al iniciar sesión (`onlogon`).
+* **Stealth (Ocultación):** Los archivos se instalan en directorios ocultos del sistema (`%LOCALAPPDATA%\SystemUpdateService`) fuera de la vista del usuario.
+* **LOLBAS:** Uso de binarios nativos (`powershell.exe`, `reg.exe`, `schtasks.exe`) para operar sin levantar sospechas ("Living Off The Land").
 
-Si has ejecutado este script y quieres detenerlo y eliminarlo por completo, sigue estos pasos según tu sistema operativo.
+#### 🐧 Linux (Advanced Persistence)
+* **Cron Injection:** Inserción de tareas `@reboot` en el `crontab` del usuario (invisible en la carpeta de inicio estándar).
+* **Redundancia:** Mantiene también accesos `.desktop` en `~/.config/autostart` como respaldo.
+* **Stealth Dir:** Operación desde directorios ocultos (`~/.hidden_sys_check`).
 
-### 🪟 Para Windows
-
-1.  **Detener el Caos:**
-    * Presiona `Ctrl` + `Alt` + `Supr` y abre el **Administrador de Tareas**.
-    * Busca "Procesador de comandos de Windows" o el nombre del `.exe`.
-    * Haz clic derecho -> **Finalizar tarea**.
-    * *(Alternativa: Crea un archivo llamado `killswitch.txt` en tu Escritorio).*
-
-2.  **Eliminar Persistencia (Para que no vuelva al reiniciar):**
-    * Presiona `Windows` + `R`.
-    * Escribe `shell:startup` y pulsa Enter.
-    * Borra el archivo **`security_daemon.bat`** (o el nombre del `.exe` generado).
-    * Borra la carpeta `archivosSecretos` si aparece ahí.
-
-3.  **Restaurar Fondo:**
-    * Clic derecho en el escritorio -> Personalizar -> Fondo.
-
-### 🐧 Para Linux
-
-1.  **Detener el Script:**
-    * Abre una terminal y ejecuta:
-        ```bash
-        killall security_check.sh
-        killall xterm
-        killall gnome-terminal-server
-        ```
-    * *(Alternativa: Crea un archivo llamado `killswitch.txt` en tu carpeta personal).*
-
-2.  **Eliminar Persistencia:**
-    * Borra el acceso directo de autoarranque:
-        ```bash
-        rm ~/.config/autostart/sys_check.desktop
-        ```
-    * Borra la carpeta oculta donde se instaló el script:
-        ```bash
-        rm -rf ~/.hidden_sys_check
-        ```
-
-3.  **Restaurar Fondo:**
-    * Cambia el fondo desde la configuración de apariencia de tu distribución.
+### 3. 📡 Command & Control (C2 Beaconing)
+Implementación de comunicación unidireccional para monitorización de víctimas:
+* **Heartbeat:** Los scripts envían "pings" periódicos mediante `curl` (POST requests) a un servidor remoto (Webhook).
+* **Reporte de Estado:** Notifica eventos clave: `INFECTED`, `ACTIVE`, `KILLED_BY_USER`, `PAYLOAD_EXECUTED`.
+* **Infraestructura:** Compatible con Webhooks para monitorización en tiempo real sin necesidad de abrir puertos en el cliente.
 
 ---
 
-## 🔐 Kill Switch & Controles (Apagado de Emergencia)
+## 🛠️ Instalación y Uso (Entorno de Prueba)
 
-Para garantizar la seguridad y el control durante la prueba, ambos scripts incluyen **dos mecanismos de parada** integrados que detienen el bucle de ventanas inmediatamente:
+### Prerrequisitos
+1.  **Servidor C2:** Configura una URL en [Webhook.site](https://webhook.site) y pégala en la variable `C2_URL` dentro de los scripts `installer.bat` e `installer.sh`.
+2.  **Empaquetado:**
+    * **Windows:** Convierte `installer.bat` a `.exe` (recomendado) para mayor realismo.
+    * **Linux:** Comprime `installer.sh` y la carpeta de recursos en un `.zip`.
 
-### 1. ⌨️ Método Interactivo (Tecla Q)
-El script monitorea el teclado en tiempo real.
-* **Instrucción:** Mantén presionada la tecla **`Q`** en cualquier momento durante la ejecución.
-* **Resultado:** El bucle se rompe, se detiene la apertura de nuevas ventanas y el script finaliza (o pasa a la carga final, dependiendo de la configuración).
+### Ejecución
+1.  Abre el archivo `index.html` en tu navegador.
+2.  Selecciona tu sistema operativo y descarga el archivo.
+3.  Sigue las instrucciones de "instalación" (Ingeniería Social).
+4.  Observa en tu panel de Webhook cómo la "víctima" se conecta y reporta estado.
 
-### 2. 📁 Método Pasivo (Archivo Bloqueo)
-Ideal para detener el script si no tienes acceso al teclado o si se ejecuta en segundo plano. El script busca constantemente un archivo "llave".
-* **Instrucción:** Crea un archivo vacío llamado **`killswitch.txt`**.
-* **Ubicaciones detectadas:**
-    * Escritorio
-    * Documentos
-    * Descargas
-    * La misma carpeta donde está el script
-    * Cualquier memoria USB conectada (D:, E:, /media/usb...)
+---
+
+## 🔐 Kill Switch (Mecanismos de Parada)
+
+Para mantener el control durante las pruebas, se han implementado dos "botones de pánico":
+
+1.  **Interactivo (Tecla Q):** Mantener presionada la tecla **`Q`** detiene el bucle de ventanas y envía una señal de "Abort" al C2 inmediatamente.
+2.  **Pasivo (Archivo):** Crear un archivo llamado **`killswitch.txt`** en el Escritorio, Descargas o raíz de un USB detendrá el proceso automáticamente al ser detectado.
+
+---
+
+## 🧹 GUÍA DE LIMPIEZA TOTAL (Uninstall)
+
+Debido a la persistencia avanzada, **borrar el archivo descargado NO detendrá el script** al reiniciar. Sigue estos pasos para desinfectar la máquina completamente:
+
+
+
+### 🪟 Windows (Limpieza Profunda)
+1.  **Detener Proceso:** Administrador de Tareas (`Ctrl+Alt+Supr`) -> Finalizar `cmd.exe` o `conhost.exe`.
+2.  **Borrar Archivos Ocultos:** Eliminar la carpeta: `%LOCALAPPDATA%\SystemUpdateService`.
+3.  **Limpiar Registro:** Ejecutar `regedit`, ir a `HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run` y borrar la clave `WindowsSecurityHealth`.
+4.  **Borrar Tarea Programada:** Abrir CMD y ejecutar: 
+    ```cmd
+    schtasks /delete /tn "OneDrive Update Check" /f
+    ```
+
+### 🐧 Linux (Limpieza Profunda)
+1.  **Detener Proceso:** Ejecutar en terminal: `killall security_check.sh`.
+2.  **Limpiar Cron:** Ejecutar `crontab -e` y borrar la línea que contiene `@reboot ... security_check.sh`.
+3.  **Borrar Archivos:** ```bash
+    rm -rf ~/.hidden_sys_check
+    ```
+4.  **Limpiar Autostart:** `rm ~/.config/autostart/sys_check.desktop`.
 
 ---
 
 ## 📄 Licencia
-
-Este proyecto está bajo la Licencia MIT - eres libre de usarlo y modificarlo, pero siempre bajo tu propia responsabilidad.
+Distribuido bajo la licencia MIT. Prohibido su uso para actividades ilegales o maliciosas sin consentimiento.d.
