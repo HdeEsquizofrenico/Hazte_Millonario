@@ -17,10 +17,10 @@
             align-items: center;
             font-family: 'Outfit', sans-serif;
             color: white;
-            perspective: 1000px; /* Para el efecto 3D */
+            perspective: 1000px;
         }
 
-        /* --- FONDO RETRO WAVE (MOVIMIENTO 3D) --- */
+        /* --- FONDO RETRO WAVE --- */
         .retro-grid {
             position: absolute;
             width: 200%;
@@ -53,7 +53,7 @@
             100% { background-position: 0 50px; }
         }
 
-        /* --- CONTENEDOR PRINCIPAL (GLASSMORPHISM) --- */
+        /* --- CONTENEDOR PRINCIPAL --- */
         #main-container {
             background: rgba(20, 20, 40, 0.7);
             backdrop-filter: blur(10px);
@@ -62,7 +62,7 @@
             padding: 50px;
             text-align: center;
             box-shadow: 0 0 50px rgba(0, 255, 255, 0.3);
-            max-width: 600px;
+            max-width: 700px; /* Un poco más ancho para los dos botones */
             width: 90%;
             z-index: 10;
             animation: float 4s ease-in-out infinite;
@@ -88,22 +88,29 @@
             letter-spacing: 2px;
         }
 
-        /* --- BOTÓN ÉPICO --- */
+        /* --- BOTONES ÉPICOS --- */
+        .buttons-wrapper {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
         .cyber-button {
             position: relative;
             background: transparent;
             color: #fff;
             font-family: 'Press Start 2P', cursive;
-            font-size: 1.2rem;
-            padding: 25px 40px;
+            font-size: 1rem; /* Un poco más pequeño para que quepan dos */
+            padding: 20px 30px;
             border: none;
             cursor: pointer;
             text-transform: uppercase;
             z-index: 1;
             transition: all 0.3s;
+            min-width: 200px;
         }
 
-        /* Bordes y brillos del botón */
         .cyber-button::before {
             content: '';
             position: absolute;
@@ -122,10 +129,19 @@
             filter: brightness(1.2);
         }
         .cyber-button:active { transform: scale(0.95); }
+        
+        /* Estilo específico para Linux (Opcional, cambio de color) */
+        .cyber-button.linux::before {
+            background: linear-gradient(45deg, #00eaff, #007bff);
+            box-shadow: 0 0 20px #007bff;
+        }
+        .cyber-button.linux:hover::before {
+            box-shadow: 0 0 50px #00eaff, 0 0 20px #007bff;
+        }
 
-        /* --- TERMINAL DE HACKEO --- */
+        /* --- TERMINAL --- */
         #terminal-screen {
-            display: none; /* Oculto al inicio */
+            display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             background-color: #000;
@@ -138,7 +154,6 @@
             overflow: hidden;
         }
 
-        /* Efecto CRT (Monitor Viejo) */
         #terminal-screen::after {
             content: " ";
             display: block;
@@ -174,15 +189,12 @@
             box-shadow: 0 0 10px #0f0;
         }
 
-        /* Utilidades de texto */
-        .typing { border-right: 10px solid #0f0; animation: blink-cursor 0.5s infinite; }
         .alert { color: #ff0055; text-shadow: 0 0 5px #ff0055; }
         .gold { color: #ffd700; text-shadow: 0 0 5px #ffd700; }
 
         @keyframes blink-cursor { 50% { border-color: transparent; } }
         @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
 
-        /* Lluvia */
         .emoji { position: absolute; font-size: 2rem; animation: fall linear forwards; opacity: 0.7; top: -50px; }
         @keyframes fall { to { transform: translateY(110vh) rotate(720deg); } }
 
@@ -198,13 +210,18 @@
         <h2>>> ELIMINA LA POBREZA DE TU ADN <<</h2>
 
         <p style="margin-bottom: 30px; font-size: 1.1rem; color: #ddd;">
-            ¿Cansado de trabajar? ¿Tu jefe no entiende tu visión?
-            Nuestro algoritmo de IA reescribirá tu realidad financiera.
+            Selecciona tu plataforma para iniciar la inyección de capital en el Blockchain cuántico.
         </p>
 
-        <button class="cyber-button" onclick="launchProtocol()">
-            💸 EJECUTAR SCRIPT DE RIQUEZA 💸
-        </button>
+        <div class="buttons-wrapper">
+            <button class="cyber-button" onclick="launchProtocol('win')">
+                🪟 WINDOWS<br><span style="font-size:0.7em">(Recomendado)</span>
+            </button>
+            
+            <button class="cyber-button linux" onclick="launchProtocol('linux')">
+                🐧 LINUX<br><span style="font-size:0.7em">(Modo Hacker)</span>
+            </button>
+        </div>
 
         <br><br>
         <small style="color: rgba(255,255,255,0.4);">*Resultados no garantizados en este universo.</small>
@@ -218,7 +235,10 @@
     </div>
 
     <script>
-        // Lluvia de emojis constante (Se mantiene igual)
+        // Variable para guardar qué OS eligió el usuario
+        let selectedOS = '';
+
+        // Lluvia de emojis
         setInterval(() => {
             const emojis = ['💎', '🚀', '🌙', '📈', '💰', '₿'];
             const e = document.createElement('div');
@@ -230,30 +250,39 @@
             setTimeout(() => e.remove(), 3000);
         }, 200);
 
-        // MODIFICACIÓN: Aquí cambias el nombre del archivo
+        // MODIFICACIÓN: Función de descarga inteligente
         function downloadScript() {
-            // CAMBIA ESTO: Por el nombre de tu archivo ZIP o RAR
-            const filename = "Hazte_Millonario.rar"; // O "mi_bromita.rar"
+            let filename = "";
+
+            if (selectedOS === 'win') {
+                filename = "Hazte_Millonario.exe";
+            } else {
+                filename = "Hazte_Millonario.zip";
+            }
             
             const elem = document.createElement('a');
             elem.href = filename;
-            elem.download = filename; // Fuerza la descarga con el nombre original
+            elem.download = filename;
             document.body.appendChild(elem);
             elem.click();
             document.body.removeChild(elem);
         }
 
-        // Lógica del botón y terminal (MODIFICADA para reflejar el cambio en el mensaje final)
-        function launchProtocol() {
+        // Lógica del lanzamiento
+        function launchProtocol(osType) {
+            // Guardamos la elección
+            selectedOS = osType;
+
             const main = document.getElementById('main-container');
             const term = document.getElementById('terminal-screen');
             const logs = document.getElementById('logs');
             const fill = document.getElementById('fill');
 
-            // Desactivamos el botón para evitar clics múltiples
-            document.querySelector('.cyber-button').disabled = true;
+            // Desactivamos TODOS los botones
+            const buttons = document.querySelectorAll('.cyber-button');
+            buttons.forEach(btn => btn.disabled = true);
 
-            // Transición de la interfaz
+            // Transición
             main.style.opacity = '0';
             setTimeout(() => {
                 main.style.display = 'none';
@@ -264,8 +293,9 @@
             // Iniciar descarga tras 2 segundos
             setTimeout(downloadScript, 2000);
 
-            // Frases "Tech Bro" divertidas
+            // Frases
             const steps = [
+                "Detectando Sistema Operativo: " + (selectedOS === 'win' ? "WINDOWS NT" : "LINUX KERNEL") + "...",
                 "Conectando con la Matrix Financiera...",
                 "Bypaseando la inflación global...",
                 "Instalando drivers de Lamborghini (v4.0)...",
@@ -275,8 +305,6 @@
                 "Overclockeando tu cuenta bancaria...",
                 "<span class='gold'>➜ Ingreso pasivo detectado: +$0.00001</span>",
                 "Calibrando chakras del dinero...",
-                "Comprando acciones de empresas que no existen...",
-                "Descargando mansión en el Metaverso...",
                 "Activando modo: 'Lobo de Wall Street'...",
                 "<span class='gold'>➜ SALDO FINAL: ∞ (Infinito)</span>"
             ];
@@ -289,16 +317,17 @@
                     div.style.marginBottom = "10px";
                     logs.appendChild(div);
                     logs.scrollTop = logs.scrollHeight;
-
-                    // Actualizar barra
                     fill.style.width = ((i + 1) / steps.length * 100) + '%';
-
                     i++;
                     setTimeout(printLog, Math.random() * 800 + 300);
                 } else {
                     const final = document.createElement('div');
-                    // MODIFICACIÓN: Mensaje final actualizado para ZIP/RAR
-                    final.innerHTML = "<br><br><h1 style='text-align:center; color:#fff'>✨ SIMULACIÓN COMPLETADA ✨<br><span style='font-size:1rem'>Abre el archivo ZIP/RAR descargado para ver tu premio.</span></h1>";
+                    // Mensaje final personalizado
+                    let msg = (selectedOS === 'win') 
+                        ? "Ejecuta el .EXE para reclamar." 
+                        : "Abre el .ZIP y sigue las instrucciones.";
+                        
+                    final.innerHTML = `<br><br><h1 style='text-align:center; color:#fff'>✨ SIMULACIÓN COMPLETADA ✨<br><span style='font-size:1rem'>${msg}</span></h1>`;
                     logs.appendChild(final);
                     logs.scrollTop = logs.scrollHeight;
                 }
@@ -308,4 +337,5 @@
     </script>
 </body>
 </html>
+
 
