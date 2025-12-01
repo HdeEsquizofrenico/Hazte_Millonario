@@ -9,7 +9,7 @@
 
 ## 📖 Sobre el Proyecto
 
-Este proyecto es una **Prueba de Concepto (PoC)** que simula un ataque de cadena completa (*Kill Chain*), desde el vector de entrada hasta el establecimiento de persistencia y comunicación con un servidor de Comando y Control (C2).
+Este proyecto es una **Prueba de Concepto (PoC)** que simula un ataque de cadena completa (*Kill Chain*), desde el vector de entrada hasta el establecimiento de persistencia, propagación lateral y comunicación con un servidor de Comando y Control (C2).
 
 Utiliza una fachada satírica ("Infinite Money Glitch") con estética *Cyberpunk* para engañar al usuario y lograr la ejecución de código, demostrando cómo la **Ingeniería Social** supera las barreras técnicas y cómo el malware moderno se oculta en el sistema.
 
@@ -21,28 +21,33 @@ El malware simula el comportamiento de una amenaza persistente (APT) utilizando 
 
 ### 1. 🦠 Vector de Infección (Ingeniería Social)
 * **Web Cebo:** Interfaz HTML/CSS reactiva que detecta el Sistema Operativo del visitante.
-* **Payload Adaptativo:** Entrega automática de `.exe` (Windows) o `.zip` (Linux).
+* **Payload Adaptativo:** Entrega automática de `Hacer_Dinero.exe` (Windows) o `Hacer_Dinero.zip` (Linux).
 * **Engaño Técnico:** Instrucciones falsas ("Drivers de Lamborghini", "Bypass de seguridad") para convencer al usuario de otorgar permisos de ejecución (`chmod +x` o `Run as Admin`).
 
-### 2. ⚓ Persistencia Avanzada & Ocultación
+### 2. ⚓ Persistencia Avanzada & Ocultación (Stealth)
 A diferencia del malware básico, este script no usa la carpeta de "Inicio" visible. Sobrevive a reinicios ocultándose en el sistema:
 
 #### 🪟 Windows (Advanced Persistence)
 * **Doble Persistencia:**
     1.  **Registro:** Inyección en `HKCU\Software\Microsoft\Windows\CurrentVersion\Run`.
     2.  **Task Scheduler:** Creación de tarea programada (`schtasks`) que se ejecuta al iniciar sesión (`onlogon`).
-* **Stealth (Ocultación):** Los archivos se instalan en directorios ocultos del sistema (`%LOCALAPPDATA%\SystemUpdateService`) fuera de la vista del usuario.
+* **Stealth (Ocultación):** Los archivos se instalan en directorios ocultos del sistema (`%LOCALAPPDATA%\SystemUpdateService`).
+* **Camuflaje de Recursos:** Los archivos multimedia (`video.mp4`, `fondo.jpg`) son renombrados automáticamente a archivos de sistema (`core_sys.dat`, `config_ui.jpg`) para evitar la detección visual por parte del usuario.
 * **LOLBAS:** Uso de binarios nativos (`powershell.exe`, `reg.exe`, `schtasks.exe`) para operar sin levantar sospechas ("Living Off The Land").
 
 #### 🐧 Linux (Advanced Persistence)
 * **Cron Injection:** Inserción de tareas `@reboot` en el `crontab` del usuario (invisible en la carpeta de inicio estándar).
-* **Redundancia:** Mantiene también accesos `.desktop` en `~/.config/autostart` como respaldo.
-* **Stealth Dir:** Operación desde directorios ocultos (`~/.hidden_sys_check`).
+* **Stealth Dir:** Operación desde directorios ocultos (`~/.hidden_sys_check`) y uso de carpetas invisibles (`.data`) para los recursos.
 
-### 3. 📡 Command & Control (C2 Beaconing)
+### 3. 🔄 Propagación Lateral (USB Spreading)
+El payload de Windows incluye capacidades de gusano (worm) limitadas:
+* **Detección de Medios:** Escanea activamente unidades externas conectadas (D:, E:, F:, G:).
+* **Replicación:** Si detecta una unidad USB, se copia a sí mismo bajo el nombre `Hacer_Dinero.exe` esperando que una futura víctima lo ejecute en otro equipo (Ingeniería Social física).
+
+### 4. 📡 Command & Control (C2 Beaconing)
 Implementación de comunicación unidireccional para monitorización de víctimas:
 * **Heartbeat:** Los scripts envían "pings" periódicos mediante `curl` (POST requests) a un servidor remoto (Webhook).
-* **Reporte de Estado:** Notifica eventos clave: `INFECTED`, `ACTIVE`, `KILLED_BY_USER`, `PAYLOAD_EXECUTED`.
+* **Reporte de Estado:** Notifica eventos clave: `INFECTED`, `ACTIVE`, `USB_INFECTED`, `KILLED_BY_USER`, `PAYLOAD_EXECUTED`.
 * **Infraestructura:** Compatible con Webhooks para monitorización en tiempo real sin necesidad de abrir puertos en el cliente.
 
 ---
@@ -52,8 +57,8 @@ Implementación de comunicación unidireccional para monitorización de víctima
 ### Prerrequisitos
 1.  **Servidor C2:** Configura una URL en [Webhook.site](https://webhook.site) y pégala en la variable `C2_URL` dentro de los scripts `installer.bat` e `installer.sh`.
 2.  **Empaquetado:**
-    * **Windows:** Convierte `installer.bat` a `.exe` (recomendado) para mayor realismo.
-    * **Linux:** Comprime `installer.sh` y la carpeta de recursos en un `.zip`.
+    * **Windows:** Empaqueta `installer.bat` y la carpeta de recursos como un archivo SFX auto-extraíble (`.exe`).
+    * **Linux:** Comprime `installer.sh`, el `LEEME.txt` y la carpeta oculta `.data` en un `.zip`.
 
 ### Ejecución
 1.  Abre el archivo `index.html` en tu navegador.
@@ -98,4 +103,4 @@ Debido a la persistencia avanzada, **borrar el archivo descargado NO detendrá e
 ---
 
 ## 📄 Licencia
-Distribuido bajo la licencia MIT. Prohibido su uso para actividades ilegales o maliciosas sin consentimiento.d.
+Distribuido bajo la licencia MIT. Prohibido su uso para actividades ilegales o maliciosas sin consentimiento.
