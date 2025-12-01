@@ -1,106 +1,86 @@
-# 🚀 Infinite Money Glitch (PoC) - Advanced Red Teaming Demo
+# Infinite Money Glitch (PoC) - Ransomware Simulation Framework
 
-> **⚠️ AVISO LEGAL Y ÉTICO:** > Este repositorio contiene código diseñado exclusivamente con fines **EDUCATIVOS** y de **INVESTIGACIÓN EN CIBERSEGURIDAD**.  
-> El objetivo es demostrar vectores de ataque mediante Ingeniería Social, técnicas de persistencia avanzada y simulación de C2.  
-> **No es un virus destructivo:** No cifra archivos, no roba credenciales y no daña el hardware.  
-> El autor no se hace responsable del mal uso de estas herramientas. Ejecútalo únicamente en entornos controlados (Sandboxes/VMs) o con consentimiento explícito.
-
----
-
-## 📖 Sobre el Proyecto
-
-Este proyecto es una **Prueba de Concepto (PoC)** que simula un ataque de cadena completa (*Kill Chain*), desde el vector de entrada hasta el establecimiento de persistencia, propagación lateral y comunicación con un servidor de Comando y Control (C2).
-
-Utiliza una fachada satírica ("Infinite Money Glitch") con estética *Cyberpunk* para engañar al usuario y lograr la ejecución de código, demostrando cómo la **Ingeniería Social** supera las barreras técnicas y cómo el malware moderno se oculta en el sistema.
+> **AVISO LEGAL:** > Este repositorio contiene código diseñado exclusivamente con fines **EDUCATIVOS** y de **INVESTIGACIÓN EN CIBERSEGURIDAD**.  
+> Esta herramienta es un simulador de ransomware no destructivo. No cifra el contenido real de los archivos (solo renombra), no exfiltra datos sensibles y no daña el hardware.  
+> El autor no se hace responsable del uso indebido de este software. Su ejecución debe realizarse únicamente en entornos aislados (Sandboxes/VMs) o redes bajo autorización explícita.
 
 ---
 
-## ⚙️ Arquitectura y Capacidades Técnicas
+## Descripción del Proyecto
 
-El malware simula el comportamiento de una amenaza persistente (APT) utilizando técnicas modernas:
+Este proyecto es una Prueba de Concepto (PoC) multiplataforma (Windows/Linux) diseñada para simular el ciclo de vida de un ataque de ransomware. Su objetivo es evaluar la capacidad de detección de soluciones EDR/AV y la respuesta ante incidentes sin comprometer la integridad de los datos.
 
-### 1. 🦠 Vector de Infección (Ingeniería Social)
-* **Web Cebo:** Interfaz HTML/CSS reactiva que detecta el Sistema Operativo del visitante.
-* **Payload Adaptativo:** Entrega automática de `Hacer_Dinero.exe` (Windows) o `Hacer_Dinero.zip` (Linux).
-* **Engaño Técnico:** Instrucciones falsas ("Drivers de Lamborghini", "Bypass de seguridad") para convencer al usuario de otorgar permisos de ejecución (`chmod +x` o `Run as Admin`).
-
-### 2. ⚓ Persistencia Avanzada & Ocultación (Stealth)
-A diferencia del malware básico, este script no usa la carpeta de "Inicio" visible. Sobrevive a reinicios ocultándose en el sistema:
-
-#### 🪟 Windows (Advanced Persistence)
-* **Doble Persistencia:**
-    1.  **Registro:** Inyección en `HKCU\Software\Microsoft\Windows\CurrentVersion\Run`.
-    2.  **Task Scheduler:** Creación de tarea programada (`schtasks`) que se ejecuta al iniciar sesión (`onlogon`).
-* **Stealth (Ocultación):** Los archivos se instalan en directorios ocultos del sistema (`%LOCALAPPDATA%\SystemUpdateService`).
-* **Camuflaje de Recursos:** Los archivos multimedia (`video.mp4`, `fondo.jpg`) son renombrados automáticamente a archivos de sistema (`core_sys.dat`, `config_ui.jpg`) para evitar la detección visual por parte del usuario.
-* **LOLBAS:** Uso de binarios nativos (`powershell.exe`, `reg.exe`, `schtasks.exe`) para operar sin levantar sospechas ("Living Off The Land").
-
-#### 🐧 Linux (Advanced Persistence)
-* **Cron Injection:** Inserción de tareas `@reboot` en el `crontab` del usuario (invisible en la carpeta de inicio estándar).
-* **Stealth Dir:** Operación desde directorios ocultos (`~/.hidden_sys_check`) y uso de carpetas invisibles (`.data`) para los recursos.
-
-### 3. 🔄 Propagación Lateral (USB Spreading)
-El payload de Windows incluye capacidades de gusano (worm) limitadas:
-* **Detección de Medios:** Escanea activamente unidades externas conectadas (D:, E:, F:, G:).
-* **Replicación:** Si detecta una unidad USB, se copia a sí mismo bajo el nombre `Hacer_Dinero.exe` esperando que una futura víctima lo ejecute en otro equipo (Ingeniería Social física).
-
-### 4. 📡 Command & Control (C2 Beaconing)
-Implementación de comunicación unidireccional para monitorización de víctimas:
-* **Heartbeat:** Los scripts envían "pings" periódicos mediante `curl` (POST requests) a un servidor remoto (Webhook).
-* **Reporte de Estado:** Notifica eventos clave: `INFECTED`, `ACTIVE`, `USB_INFECTED`, `KILLED_BY_USER`, `PAYLOAD_EXECUTED`.
-* **Infraestructura:** Compatible con Webhooks para monitorización en tiempo real sin necesidad de abrir puertos en el cliente.
+El framework automatiza la infección, el establecimiento de persistencia, la simulación de cifrado de archivos, la interrupción visual/auditiva y la comunicación con un servidor de Comando y Control (C2).
 
 ---
 
-## 🛠️ Instalación y Uso (Entorno de Prueba)
+## Capacidades Técnicas
 
-### Prerrequisitos
-1.  **Servidor C2:** Configura una URL en [Webhook.site](https://webhook.site) y pégala en la variable `C2_URL` dentro de los scripts `installer.bat` e `installer.sh`.
-2.  **Empaquetado:**
-    * **Windows:** Empaqueta `installer.bat` y la carpeta de recursos como un archivo SFX auto-extraíble (`.exe`).
-    * **Linux:** Comprime `installer.sh`, el `LEEME.txt` y la carpeta oculta `.data` en un `.zip`.
+El software emula el comportamiento de amenazas persistentes mediante las siguientes técnicas:
 
-### Ejecución
-1.  Abre el archivo `index.html` en tu navegador.
-2.  Selecciona tu sistema operativo y descarga el archivo.
-3.  Sigue las instrucciones de "instalación" (Ingeniería Social).
-4.  Observa en tu panel de Webhook cómo la "víctima" se conecta y reporta estado.
+### 1. Ejecución y Carga (Payload Delivery)
+El sistema identifica el Sistema Operativo del host y despliega el script correspondiente (`.bat` para Windows, `.sh` para Linux).
+* **Detección de Entorno:** Identificación automática de directorios de usuario críticos (Escritorio, Documentos, Imágenes) utilizando variables de entorno (`%USERPROFILE%`) o estándares XDG.
+* **Filtro de Objetivos:** El script localiza y "bloquea" únicamente archivos con extensiones específicas de productividad y multimedia (`.pdf`, `.docx`, `.jpg`, etc.) para evitar la corrupción del sistema operativo.
+
+### 2. Persistencia y Ocultación
+El malware asegura su ejecución tras el reinicio del sistema mediante múltiples vectores:
+
+**Windows:**
+* **Registro del Sistema:** Inyección de claves en `HKCU\Software\Microsoft\Windows\CurrentVersion\Run`.
+* **Programador de Tareas:** Creación de tareas persistentes (`schtasks`) configuradas para ejecutarse al inicio de sesión (`onlogon`).
+* **Ocultación:** Instalación de binarios y recursos en directorios ocultos dentro de `%LOCALAPPDATA%`.
+* **Living Off The Land (LOLBAS):** Uso de `PowerShell` oculto para la gestión de procesos en segundo plano (audio/bucle).
+
+**Linux:**
+* **Cron Jobs:** Inyección de tareas `@reboot` en el `crontab` del usuario actual.
+* **XDG Autostart:** Creación de archivos `.desktop` en `~/.config/autostart`.
+* **Ocultación:** Operación desde directorios ocultos en el `HOME` del usuario.
+
+### 3. Simulación de Impacto (Ransomware Behavior)
+* **Cifrado Simulado:** Renombrado masivo de archivos añadiendo la extensión `.locked`. El proceso es reversible.
+* **Saturación de Recursos:** Despliegue masivo de terminales (spam visual) para simular la pérdida de control del sistema.
+* **Coacción Psicológica:** Alteración del fondo de escritorio y reproducción de alertas de audio en bucle mediante subprocesos en segundo plano.
+
+### 4. Propagación Lateral (Solo Windows)
+El script monitoriza las unidades de almacenamiento extraíble (D:, E:, F:, G:) en tiempo real. Al detectar una unidad, replica el ejecutable e intenta establecer métodos de ejecución automática para facilitar el movimiento lateral en una red física.
+
+### 5. Comunicación C2 (Command & Control)
+Implementación de beaconing HTTP mediante `curl`. El cliente reporta estados al servidor remoto:
+* `INFECTED_START`: Inicio de la ejecución.
+* `ACTIVE_RUNNING`: Heartbeat periódico.
+* `USB_INFECTED`: Propagación exitosa.
+* `TIMEOUT/KILLED`: Estado final de la simulación.
 
 ---
 
-## 🔐 Kill Switch (Mecanismos de Parada)
+## Mecanismos de Control (Kill Switch)
 
-Para mantener el control durante las pruebas, se han implementado dos "botones de pánico":
+Para detener la simulación de manera segura durante las pruebas, se han implementado interrupciones prioritarias:
 
-1.  **Interactivo (Tecla Q):** Mantener presionada la tecla **`Q`** detiene el bucle de ventanas y envía una señal de "Abort" al C2 inmediatamente.
-2.  **Pasivo (Archivo):** Crear un archivo llamado **`killswitch.txt`** en el Escritorio, Descargas o raíz de un USB detendrá el proceso automáticamente al ser detectado.
+1.  **Archivo de Control:** La creación de un archivo llamado `killswitch.txt` en el directorio de ejecución, Escritorio o raíz de un USB detiene el proceso inmediatamente.
+2.  **Interrupción por Teclado:** La entrada de la tecla `Q` durante la fase de ejecución aborta el bucle principal.
+
+En ambos casos, el sistema revierte los cambios (restauración de nombres de archivo) y termina los procesos de persistencia.
 
 ---
 
-## 🧹 GUÍA DE LIMPIEZA TOTAL (Uninstall)
+## Procedimiento de Desinfección
 
-Debido a la persistencia avanzada, **borrar el archivo descargado NO detendrá el script** al reiniciar. Sigue estos pasos para desinfectar la máquina completamente:
+Dado que el script establece persistencia avanzada, eliminar el archivo original no es suficiente. Siga estos pasos para limpiar el sistema:
 
-
-
-### 🪟 Windows (Limpieza Profunda)
-1.  **Detener Proceso:** Administrador de Tareas (`Ctrl+Alt+Supr`) -> Finalizar `cmd.exe` o `conhost.exe`.
-2.  **Borrar Archivos Ocultos:** Eliminar la carpeta: `%LOCALAPPDATA%\SystemUpdateService`.
-3.  **Limpiar Registro:** Ejecutar `regedit`, ir a `HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run` y borrar la clave `WindowsSecurityHealth`.
-4.  **Borrar Tarea Programada:** Abrir CMD y ejecutar: 
+### Windows
+1.  **Detener Procesos:** Finalizar procesos asociados a `cmd.exe`, `conhost.exe` o `powershell.exe` que estén ejecutando audio.
+2.  **Archivos:** Eliminar el directorio `%LOCALAPPDATA%\SystemUpdateService`.
+3.  **Registro:** Eliminar la clave `WindowsSecurityHealth` en `HKCU\Software\Microsoft\Windows\CurrentVersion\Run`.
+4.  **Tareas:** Eliminar la tarea programada "OneDrive Update Check" desde el Programador de Tareas o mediante CMD:
     ```cmd
     schtasks /delete /tn "OneDrive Update Check" /f
     ```
 
-### 🐧 Linux (Limpieza Profunda)
-1.  **Detener Proceso:** Ejecutar en terminal: `killall security_check.sh`.
-2.  **Limpiar Cron:** Ejecutar `crontab -e` y borrar la línea que contiene `@reboot ... security_check.sh`.
-3.  **Borrar Archivos:** ```bash
-    rm -rf ~/.hidden_sys_check
-    ```
-4.  **Limpiar Autostart:** `rm ~/.config/autostart/sys_check.desktop`.
-
----
-
-## 📄 Licencia
-Distribuido bajo la licencia MIT. Prohibido su uso para actividades ilegales o maliciosas sin consentimiento.
+### Linux
+1.  **Detener Procesos:** `killall security_check.sh` y detener procesos de audio (`aplay`/`paplay`).
+2.  **Archivos:** Eliminar el directorio `~/.hidden_sys_check`.
+3.  **Cron:** Editar crontab (`crontab -e`) y eliminar la línea correspondiente al script.
+4.  **Autostart:** Eliminar el archivo `~/.config/autostart/sys_check.desktop`.
+Autostart: Eliminar el archivo ~/.config/autostart/sys_check.desktop.
