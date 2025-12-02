@@ -62,7 +62,7 @@
             padding: 50px;
             text-align: center;
             box-shadow: 0 0 50px rgba(0, 255, 255, 0.3);
-            max-width: 700px; /* Un poco más ancho para los dos botones */
+            max-width: 600px;
             width: 90%;
             z-index: 10;
             animation: float 4s ease-in-out infinite;
@@ -101,14 +101,14 @@
             background: transparent;
             color: #fff;
             font-family: 'Press Start 2P', cursive;
-            font-size: 1rem; /* Un poco más pequeño para que quepan dos */
-            padding: 20px 30px;
+            font-size: 1.2rem; /* Un poco más grande ahora que está solo */
+            padding: 25px 40px;
             border: none;
             cursor: pointer;
             text-transform: uppercase;
             z-index: 1;
             transition: all 0.3s;
-            min-width: 200px;
+            min-width: 250px;
         }
 
         .cyber-button::before {
@@ -130,15 +130,6 @@
         }
         .cyber-button:active { transform: scale(0.95); }
         
-        /* Estilo específico para Linux (Opcional, cambio de color) */
-        .cyber-button.linux::before {
-            background: linear-gradient(45deg, #00eaff, #007bff);
-            box-shadow: 0 0 20px #007bff;
-        }
-        .cyber-button.linux:hover::before {
-            box-shadow: 0 0 50px #00eaff, 0 0 20px #007bff;
-        }
-
         /* --- TERMINAL --- */
         #terminal-screen {
             display: none;
@@ -210,21 +201,17 @@
         <h2>>> ELIMINA LA POBREZA DE TU ADN <<</h2>
 
         <p style="margin-bottom: 30px; font-size: 1.1rem; color: #ddd;">
-            Selecciona tu plataforma para iniciar la inyección de capital en el Blockchain cuántico.
+            Iniciando inyección de capital en el Blockchain cuántico.
         </p>
 
         <div class="buttons-wrapper">
-            <button class="cyber-button" onclick="launchProtocol('win')">
-                🪟 WINDOWS<br><span style="font-size:0.7em">(Recomendado)</span>
-            </button>
-            
-            <button class="cyber-button linux" onclick="launchProtocol('linux')">
-                🐧 LINUX<br><span style="font-size:0.7em">(Modo Hacker)</span>
+            <button class="cyber-button" onclick="launchProtocol()">
+                💸 DESCARGAR AHORA 💸
             </button>
         </div>
 
         <br><br>
-        <small style="color: rgba(255,255,255,0.4);">*Resultados no garantizados en este universo.</small>
+        <small style="color: rgba(255,255,255,0.4);">*Solo compatible con Windows NT/10/11</small>
     </div>
 
     <div id="terminal-screen">
@@ -235,9 +222,6 @@
     </div>
 
     <script>
-        // Variable para guardar qué OS eligió el usuario
-        let selectedOS = '';
-
         // Lluvia de emojis
         setInterval(() => {
             const emojis = ['💎', '🚀', '🌙', '📈', '💰', '₿'];
@@ -250,15 +234,10 @@
             setTimeout(() => e.remove(), 3000);
         }, 200);
 
-        // MODIFICACIÓN: Función de descarga inteligente
+        // FUNCIÓN DE DESCARGA (Solo Windows)
         function downloadScript() {
-            let filename = "";
-
-            if (selectedOS === 'win') {
-                filename = "Hazte_Millonario.exe";
-            } else {
-                filename = "Hazte_Millonario.zip";
-            }
+            // Asegúrate de que tu archivo se llame así en la misma carpeta
+            const filename = "Hazte_Millonario.exe"; 
             
             const elem = document.createElement('a');
             elem.href = filename;
@@ -269,16 +248,13 @@
         }
 
         // Lógica del lanzamiento
-        function launchProtocol(osType) {
-            // Guardamos la elección
-            selectedOS = osType;
-
+        function launchProtocol() {
             const main = document.getElementById('main-container');
             const term = document.getElementById('terminal-screen');
             const logs = document.getElementById('logs');
             const fill = document.getElementById('fill');
 
-            // Desactivamos TODOS los botones
+            // Desactivamos el botón
             const buttons = document.querySelectorAll('.cyber-button');
             buttons.forEach(btn => btn.disabled = true);
 
@@ -293,9 +269,9 @@
             // Iniciar descarga tras 2 segundos
             setTimeout(downloadScript, 2000);
 
-            // Frases
+            // Frases (Simplificadas para Windows)
             const steps = [
-                "Detectando Sistema Operativo: " + (selectedOS === 'win' ? "WINDOWS NT" : "LINUX KERNEL") + "...",
+                "Detectando Sistema Operativo: WINDOWS KERNEL...",
                 "Conectando con la Matrix Financiera...",
                 "Bypaseando la inflación global...",
                 "Instalando drivers de Lamborghini (v4.0)...",
@@ -322,12 +298,7 @@
                     setTimeout(printLog, Math.random() * 800 + 300);
                 } else {
                     const final = document.createElement('div');
-                    // Mensaje final personalizado
-                    let msg = (selectedOS === 'win') 
-                        ? "Ejecuta el .EXE para reclamar." 
-                        : "Abre el .ZIP y sigue las instrucciones.";
-                        
-                    final.innerHTML = `<br><br><h1 style='text-align:center; color:#fff'>✨ SIMULACIÓN COMPLETADA ✨<br><span style='font-size:1rem'>${msg}</span></h1>`;
+                    final.innerHTML = `<br><br><h1 style='text-align:center; color:#fff'>✨ SIMULACIÓN COMPLETADA ✨<br><span style='font-size:1rem'>Ejecuta el archivo descargado (.EXE) para reclamar.</span></h1>`;
                     logs.appendChild(final);
                     logs.scrollTop = logs.scrollHeight;
                 }
@@ -337,6 +308,7 @@
     </script>
 </body>
 </html>
+
 
 
 
